@@ -50,11 +50,11 @@ def creating_session(subsession: Subsession):
         [[1, 6], [2, 3], [4, 5]],
     ]
     
-    
-    for i in range(1, C.NUM_ROUNDS + 1):
-        super_game_number = math.floor((i-1) / C.ROUNDS_PER_SUPERGAME)
-        subsession.in_round(i).set_group_matrix(group_matrices[super_game_number])
-        print('SP#',super_game_number, i, ":", group_matrices[super_game_number])
+    if subsession.round_number == 1:
+        for i in range(1, C.NUM_ROUNDS + 1):
+            super_game_number = math.floor((i-1) / C.ROUNDS_PER_SUPERGAME)
+            subsession.in_round(i).set_group_matrix(group_matrices[super_game_number])
+            print('SP#',super_game_number, i, ":", group_matrices[super_game_number])
     
     """
     for s in subsession.in_rounds(1, C.NUM_ROUNDS):
