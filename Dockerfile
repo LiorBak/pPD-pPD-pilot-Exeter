@@ -1,4 +1,4 @@
-FROM python:3.11-alpine
+FROM python:3.10-alpine
 
 ADD ./ /opt/otree
 ADD ./entrypoint.sh /entrypoint.sh
@@ -15,10 +15,10 @@ RUN apk update \
                           libffi \
                           libffi-dev \
     && pip install --no-cache-dir -r /opt/otree/requirements.txt \
+    && pip3 uninstall -y uvicorn \
+    && pip3 install uvicorn[standard] \
     && mkdir -p /opt/init \
     && chmod +x /entrypoint.sh \
-    && pip3 uninstall -y uvicorn \
-    && pip3 install uvicorn[standard]==0.13.4 \
     && apk del curl gcc musl-dev postgresql-dev libffi-dev
 
 WORKDIR /opt/otree
