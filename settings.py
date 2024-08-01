@@ -8,7 +8,7 @@ SESSION_CONFIGS = [
     dict(name='experiment_main',
          num_demo_participants=6,
          app_sequence=['prisoner', 'survey'],
-         use_browser_bots=True
+         use_browser_bots=False
          ),
     dict(
         name='forwrd_link',
