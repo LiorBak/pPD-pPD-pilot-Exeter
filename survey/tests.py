@@ -1,5 +1,6 @@
 
-from . import UnderstandingTest, RiskPreferences, RiskPreferences2, RiskPreferences3, Demographics, Payment_info, EndOfExperiment, Bot
+from . import RiskPreferences, RiskPreferences2, RiskPreferences3, Demographics
+from otree.api import Bot
 
 
 class PlayerBot(Bot):

@@ -3,12 +3,21 @@
 
 {{ block content }}
 
+<p>Thank you for taking part in our study today. As noted at the start of the experiment you will be paid {{session.config.participation_fee}}</p>
+
+<p>There was also the possibility of earning a bonus of {{session.config.bonus_payment}}</p>
+
+<p>You scored XYZ which means you had a ABC chance of receiving the bopmnus payment.</p>
+
+TODO A or B, did they get it??
+
+<p>Therefore your total payment for today is <strong>{{participant.payoff_plus_participation_fee}}</strong></p>
+
 <p>
-    Please fill the following fields to anable your payment.
+    <b>Please use the following link to fill out the payment details:</b>
 </p>
-
-{{ formfields }}
-
-{{ next_button }}
+<p>
+    <a href="{{fwd_url}}">Payment Link</a>
+</p>
 
 {{ endblock }}
