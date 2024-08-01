@@ -4,7 +4,7 @@ SESSION_CONFIG_DEFAULTS = dict(real_world_currency_per_point=1,
                                turned_away_fee=3)
 
 SESSION_CONFIGS = [
-    dict(name='my_session',
+    dict(name='experiment_main',
          num_demo_participants=6,
          app_sequence=['prisoner', 'survey'],
          ),
