@@ -206,6 +206,7 @@ def calc_total_payoff(player: Player):
     if player.win_bonus:
         bonus = C.BONUS_FEE
     player.total_experiment_payoffGDP = C.SHOW_UP_FEE + bonus
+    player.participant.vars['payoff'] = bonus
     
     return [chance_to_win, random_number]
 class InformedConsentPage(Page):
