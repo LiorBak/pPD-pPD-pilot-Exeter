@@ -209,6 +209,7 @@ def calc_total_payoff(player: Player):
 
     # populate payoff values to participant level
     player.participant.vars['payoff'] = bonus
+    player.participant.vars['bonus'] = bonus  # this will be used later to overwrite payoff
     player.participant.vars['total_score'] = float(player.total_score)
     player.participant.vars['chance_to_win'] = chance_to_win*100
     player.participant.vars['random_lottery_number'] = random_number*100
