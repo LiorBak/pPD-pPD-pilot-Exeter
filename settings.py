@@ -29,7 +29,7 @@ LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = 'GBP'
 USE_POINTS = True
 DEMO_PAGE_INTRO_HTML = ''
-PARTICIPANT_FIELDS = ['wait_page_arrival', 'is_dropout', 'total_score', 'chance_to_win', 'random_lottery_number', 'win_bonus']
+PARTICIPANT_FIELDS = ['wait_page_arrival', 'is_dropout', 'total_score', 'chance_to_win', 'random_lottery_number', 'win_bonus', 'bonus']
 SESSION_FIELDS = []
 
 ROOMS = [
