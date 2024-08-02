@@ -219,8 +219,6 @@ def calc_total_payoff(player: Player):
     
     return [chance_to_win, random_number]
 class InformedConsentPage(Page):
-    form_model = 'player'
-    form_fields = ['Email']
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
