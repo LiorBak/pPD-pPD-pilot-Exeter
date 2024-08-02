@@ -1,0 +1,15 @@
+# Delete and recreate the otree database
+name: Delete and recreate the otree database
+run-name: ${{ github.actor }} is resetting the otree database 🚀
+on:
+  workflow_dispatch:
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy Stage
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: 'https://odfasu.feele.exeter.ac.uk/ctrl/database_reset?accessToken=0e48e941-0c51-4cb9-910a-a081db8f5743'
+        method: 'POST'
