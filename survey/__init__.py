@@ -85,7 +85,7 @@ class Payment_info(Page):
     @staticmethod
     def vars_for_template(player: Player):
         participant = player.participant
-        player.payoff = -participant.total_score  # so that participant.payoff_plus_participation_fee() will function properly
+        player.payoff = participant.bonus - participant.total_score  # so that participant.payoff_plus_participation_fee() will function properly
         return dict(
             fwd_url=get_fwd_url(
                 participant.payoff_plus_participation_fee(),
