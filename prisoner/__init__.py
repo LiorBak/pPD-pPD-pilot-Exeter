@@ -214,11 +214,11 @@ def calc_total_payoff(player: Player):
     player.participant.vars['random_lottery_number'] = random_number*100
     player.participant.vars['win_bonus'] = player.win_bonus
 
-
-    
-    
     return [chance_to_win, random_number]
+
+
 class InformedConsentPage(Page):
+    form_model = 'player'
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
