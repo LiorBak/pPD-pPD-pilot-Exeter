@@ -9,7 +9,7 @@ SESSION_CONFIGS = [
          num_demo_participants=6,
          app_sequence=['prisoner', 'survey'],
          use_browser_bots=False,
-         game_type='pPD',
+         game_type="pPD",
          ),
     dict(
         name='forwrd_link',
