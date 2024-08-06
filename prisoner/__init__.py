@@ -80,7 +80,7 @@ def set_payoffs(group: Group):
 class Player(BasePlayer):
     cooperate = models.BooleanField(choices=[[True, 'Cooperate'], [False, 'Defect']], doc='This player s decision', widget=widgets.RadioSelect)
     opponent_id_in_session = models.StringField(initial='')
-    game_type = models.StringField(initial=session.config.game_type)
+    game_type = models.StringField(initial='pPD')
     forgone_payoff = models.CurrencyField()
     opponent_cooperate = models.BooleanField()
     opponent_payoff = models.CurrencyField()
