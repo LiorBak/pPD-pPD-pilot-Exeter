@@ -43,7 +43,6 @@ class Player(BasePlayer):
 def calc_is_risk_first(player: Player):
     import random
     player.is_risk_first = random.random() > 0.5
-    print('check')
 
 
 class UnderstandingTest(Page):

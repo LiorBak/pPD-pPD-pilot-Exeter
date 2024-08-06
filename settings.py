@@ -36,7 +36,15 @@ SESSION_FIELDS = []
 ROOMS = [
     dict(
         name='room1',
-        display_name='Room 1',
+        display_name='Room 1 pPD',
+    ),
+    dict(
+        name='room2',
+        display_name='Room 2 pCG',
+    ),
+        dict(
+        name='room3',
+        display_name='Room 3 PD',
     ),
     dict(
         name='room_turned_away',

@@ -80,7 +80,7 @@ def set_payoffs(group: Group):
 class Player(BasePlayer):
     cooperate = models.BooleanField(choices=[[True, 'Cooperate'], [False, 'Defect']], doc='This player s decision', widget=widgets.RadioSelect)
     opponent_id_in_session = models.StringField(initial='')
-    game_type = models.StringField(initial='pPD')
+    game_type = models.StringField(initial='')
     forgone_payoff = models.CurrencyField()
     opponent_cooperate = models.BooleanField()
     opponent_payoff = models.CurrencyField()
@@ -231,6 +231,7 @@ class Introduction(Page):
     def vars_for_template(player: Player):
         import time
         player.experiment_start_time = time.time()
+        player.game_type = player.session.config['game_type'] 
         
         # << copied from Desicion >>
         
@@ -301,6 +302,12 @@ class Introduction(Page):
                     tj = 'C' if j == 1 else 'D'
                     text_left[f"{ti}{tj}"] = f'{payoff_matrix[(i,j)]}'
                     text_right[f"{tj}{ti}"] = f'{payoff_matrix[(j,i)]}'
+
+
+                    # _______<< only for introduction >>__________
+                    text_desc_player[f"{ti}{tj}"] = f'{value_to_text(payoff_matrix[(i,j)])} '  #player
+                    text_desc_other[f"{ti}{tj}"] = f'{value_to_text(payoff_matrix[(j,i)])} '  #opponent
+                    # _______<< end of 'only for introduction' >>______
         
         # << end of copy from Desicion >>
         
@@ -475,7 +482,7 @@ class EndOfSuperGame(Page):
         )
     @staticmethod
     def get_timeout_seconds(player: Player):
-        return (4/3)*C.DESICION_TIMEOUT
+        return (5/3)*C.DESICION_TIMEOUT
 class EndOfExperiment(Page):
     @staticmethod
     def is_displayed(player: Player):
