@@ -316,7 +316,7 @@
                 clearInterval(waitInterval);
                 waiting_info_textEL.innerHTML = "Please refresh the page"
                 waiting_timer_reset()
-                onLoad(forminputs.cooperate.value)
+                onLoad(toBool(forminputs.cooperate.value))
             }
         }, 1000);
     }
@@ -326,7 +326,11 @@
     function waiting_timer_stop() {
         clearInterval(waitInterval);
     }
+    function toBool(b) {
+        return b = (b === true || b === 'true' || b === 'True' || b === 'TRUE' || b === '1' || b === 1)
+    }
     function simulate_action_click(cooperate){
+        cooperate = toBool(cooperate)
         function simulate_click(cooperate){
             if (cooperate) {
                 action_clicked(document.getElementById('cooperateBtn'), false)
@@ -343,7 +347,7 @@
     }
     function play_random_action(){
         let rnd_cooperate = js_vars.cooperate ?? Math.random() < 0.5 // if desicion already made - don't use random
-        if (forminputs.cooperate.value !== "") {rnd_cooperate = forminputs.cooperate.value}
+        if (forminputs.cooperate.value != "") {rnd_cooperate = toBool(forminputs.cooperate.value)}
         simulate_action_click(rnd_cooperate)
     }
 
@@ -480,6 +484,7 @@
         //       -. update timer
         //       -. reduce times to 10 second action action/results. + 2 timeouts = drop out player (give him botton to say 'im back' bu until then he is replaced with random choice. dropout players Results page time should be set to 1 sec)
         //       5. handle when page gets refreshed - on load - check if action was already made, and if there are already results to display
+        
         
         if (data.opponent_cooperate == null ) {
             return;  //since we have data for 1 player only
