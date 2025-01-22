@@ -196,10 +196,10 @@
                     <tr>
                         <td>{{if is_random_matching}}{{past_player.round_number}}{{else}}{{ past_player.super_game_round_number}}{{endif}}</td>
                         <td>{{ if past_player.cooperate }}UP{{ else }}DOWN{{ endif }}</td>
-                        <td>{{ past_player.payoff }}{{ if past_player.penalty > 0}} <i>(inc. penalty)</i>{{ endif }}</td> 
-                        <td style="text-decoration: line-through;">{{ past_player.forgone_payoff}}{{ if past_player.penalty > 0}} <i>(inc. penalty)</i>{{ endif }}</td> 
+                        <td>{{ past_player.score }}{{ if past_player.penalty > 0}} <i>(inc. penalty)</i>{{ endif }}</td> 
+                        <td style="text-decoration: line-through;">{{ past_player.forgone_score}}{{ if past_player.penalty > 0}} <i>(inc. penalty)</i>{{ endif }}</td> 
                         <td>{{ if past_player.opponent_cooperate }}LEFT{{ else }}RIGHT{{ endif }}</td>
-                        <td>{{ past_player.opponent_payoff }}</td>
+                        <td>{{ past_player.opponent_score }}</td>
 
                     </tr>
                 {{ endfor }}
@@ -260,6 +260,7 @@
             if (js_vars.is_dropout) {AFK_overlay_div.style.display='block';}
             setTimeout(() => {
                 if (js_vars.is_dropout) {
+                    forminputs.is_dropout.value = true;
                     play_random_action();
                 }
             } , 500) //0.5sec to let player press his back
@@ -373,7 +374,7 @@
         showWaitingMessage()
     }
 
-    function display_resutls(me_cooperate, opponent_cooperate, payoffs_dict){
+    function display_resutls(me_cooperate, opponent_cooperate, scores_dict){
         resetTimer(results_time) // time to see results
         waiting_timer_stop()
         hideWaitingMessage()
@@ -388,17 +389,17 @@
             
             // replace table text to results
         let value_to_text = function(v) {return (String(v) + ' points')};
-        const payoff_text = value_to_text(payoffs_dict.payoff)
-        const forgone_payoff_text = value_to_text(payoffs_dict.forgone)
-        const opponents_payoff_text = value_to_text(payoffs_dict.opponent_payoff)
+        const score_text = value_to_text(scores_dict.score)
+        const forgone_score_text = value_to_text(scores_dict.forgone)
+        const opponents_score_text = value_to_text(scores_dict.opponent_score)
 
             // iterate table cells to replace/delete text
         for (var i = 0, row; row = dtable.rows[i]; i++) {
             for (var j = 0, col; col = row.cells[j]; j++) {
-                var my_payoff_div = [...dtable.rows[i].cells[j].querySelectorAll(".col.p1")][0]
-                var opponents_payoff_div = [...dtable.rows[i].cells[j].querySelectorAll(".col.p2")][0]
+                var my_score_div = [...dtable.rows[i].cells[j].querySelectorAll(".col.p1")][0]
+                var opponents_score_div = [...dtable.rows[i].cells[j].querySelectorAll(".col.p2")][0]
                 
-                if (my_payoff_div==undefined){
+                if (my_score_div==undefined){
                     continue
                 }
 
@@ -409,27 +410,27 @@
                 let my_selection_col = resultColIndex+1+is_longer_table_line
                 let my_selection_row = results_first_line_index + resultRowIndex
                 
-                if (j==my_selection_col) { // then results and forgone payoff goes here
-                    my_payoff_div.innerHTML = (i==my_selection_row)? payoff_text : forgone_payoff_text;
+                if (j==my_selection_col) { // then results and forgone score goes here
+                    my_score_div.innerHTML = (i==my_selection_row)? score_text : forgone_score_text;
                     if (i == my_selection_row) {
-                        opponents_payoff_div.innerHTML = opponents_payoff_text;
-                        opponents_payoff_div.classList.add('opponent_payoff')
-                        my_payoff_div.classList.add('result_payoff')
+                        opponents_score_div.innerHTML = opponents_score_text;
+                        opponents_score_div.classList.add('opponent_payoff')
+                        my_score_div.classList.add('result_payoff')
                         col.classList.add('highlightcell')
                     }
                     else {
-                        my_payoff_div.classList.add('forgone')
-                        opponents_payoff_div.classList.add('opacity');
+                        my_score_div.classList.add('forgone')
+                        opponents_score_div.classList.add('opacity');
                     }
                 }
                 else { // neither selection of forgone cells
-                    my_payoff_div.classList.add('opacity');
-                    opponents_payoff_div.classList.add('opacity');
+                    my_score_div.classList.add('opacity');
+                    opponents_score_div.classList.add('opacity');
                 }
             }
         }
 
-        set_textual_results(me_cooperate, opponent_cooperate, payoffs_dict.payoff, payoffs_dict.forgone, payoffs_dict.opponent_payoff, payoffs_dict.penalty)
+        set_textual_results(me_cooperate, opponent_cooperate, scores_dict.score, scores_dict.forgone, scores_dict.opponent_score, scores_dict.penalty)
         
             // add 'Next' button
         nextdiv = document.getElementById('next_button_container')
@@ -445,29 +446,29 @@
         }, 500)
     }
 
-    function set_textual_results(cooperate, opponent_cooperate, payoff, forgone, opponent_payoff, penalty) {
+    function set_textual_results(cooperate, opponent_cooperate, score, forgone, opponent_score, penalty) {
         const value_to_text = (v) => (v === 0 ? `got ${v}` : (v > 0 ? `gained ${v}` : `lost ${Math.abs(v)}`)) + ' points';
         const forgone_value_to_text = (v) => (v === 0 ? `gotten ${v}` : (v > 0 ? `gained ${v}` : `lost ${Math.abs(v)}`)) + ' points';
         const text_div = document.getElementById('textual_results');
 
-        const payoff_text = value_to_text(payoff);
+        const score_text = value_to_text(score);
         const forgone_text = forgone_value_to_text(forgone);
-        const opponent_payoff_text = value_to_text(opponent_payoff);
+        const opponent_score_text = value_to_text(opponent_score);
 
         let text = `
             <p>
                 ${penalty === 0 ? 
                 `You chose <b><span class="p1">${cooperate ? 'UP' : 'DOWN'}</span></b> and the other player chose <span class="p2">${opponent_cooperate ? 'LEFT' : 'RIGHT'}</span>, hence 
-                you <b><span class="p1">${payoff_text}</span></b>.<br>
+                you <b><span class="p1">${score_text}</span></b>.<br>
                 Had you chosen to play differently (i.e, ${!cooperate ? 'UP' : 'DOWN'}) you would have <span class="forgone_text">${forgone_text}</span><br>
-                The other player ${opponent_payoff_text}.` : 
+                The other player ${opponent_score_text}.` : 
 
                 `<b>You received a penalty of ${penalty}, because you didn't take action in time</b>.<br>
                 The system automatically assigned you to play <b><span class="p1">${cooperate ? 'UP' : 'DOWN'}</span></b>.<br>
                 The other player chose <span class="p2">${opponent_cooperate ? 'LEFT' : 'RIGHT'}</span>.<br>
-                As a result, you <b><span class="p1">${payoff_text}</span></b> (after penalty deduction).<br>
+                As a result, you <b><span class="p1">${score_text}</span></b> (after penalty deduction).<br>
                 If the system would have chosen differently, you would have <span class="forgone_text">${forgone_text}</span>.<br>
-                The other player ${opponent_payoff_text}.`}<br>
+                The other player ${opponent_score_text}.`}<br>
                 {{if is_random_matching}}<span><i> Note: you will be matched with a new partner for the next round.</i></span>{{endif}}
             </p>
         `;
@@ -490,8 +491,8 @@
             return;  //since we have data for 1 player only
         }
         console.log('data:', data)
-        display_resutls( data.cooperate ,data.opponent_cooperate, data.payoffs_dict)
-        if (js_vars.is_dropout && (data.payoffs_dict.penalty > 0)){nextButton.click()}
+        display_resutls( data.cooperate ,data.opponent_cooperate, data.scores_dict)
+        if (js_vars.is_dropout && (data.scores_dict.penalty > 0)){nextButton.click()}
     }
 
     // --- wait for other player masseges ---
