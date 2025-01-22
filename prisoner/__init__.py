@@ -7,7 +7,7 @@ doc = '\nThis is a one-shot "Prisoner\'s Dilemma". Two players are asked separat
 class C(BaseConstants):
     NAME_IN_URL = 'prisoner'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 2
+    NUM_ROUNDS = 100
     ROUNDS_PER_SUPERGAME = 10
     PENALTY = cu(5)
     IS_TEST = False
