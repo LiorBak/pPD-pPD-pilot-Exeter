@@ -1,5 +1,5 @@
 from os import environ
-SESSION_CONFIG_DEFAULTS = dict(real_world_currency_per_point=0, 
+SESSION_CONFIG_DEFAULTS = dict(real_world_currency_per_point=1, 
                                participation_fee=6,
                                bonus_payment=6,
                                turned_away_fee=3,)
@@ -8,8 +8,8 @@ SESSION_CONFIGS = [
     dict(name='test',
          num_demo_participants=2,
          app_sequence=['prisoner', 'survey'],
-         use_browser_bots=False,
-         game_type="EV-PD beh-CG",
+         use_browser_bots=True,
+         game_type="EV-PD beh-PD",
          random_matching=True,
          is_description=False,
          ),
@@ -40,7 +40,7 @@ LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = 'GBP'
 USE_POINTS = True
 DEMO_PAGE_INTRO_HTML = ''
-PARTICIPANT_FIELDS = ['wait_page_arrival', 'is_dropout', 'total_score', 'chance_to_win', 'random_lottery_number', 'win_bonus', 'bonus']
+PARTICIPANT_FIELDS = ['total_score', 'chance_to_win', 'random_lottery_number', 'win_bonus', 'bonus', 'mean_cooperation']
 SESSION_FIELDS = []
 
 ROOMS = [
