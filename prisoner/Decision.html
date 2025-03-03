@@ -122,7 +122,7 @@
 <!-- General Game Info -->
 <div id='general_game_info' style='display: flex; justify-content: space-between; font-size: 1.25em; padding: 0px 20px 0px 20px;'>
     <span>
-        <b>Round {{player.round_number}} of {{C.NUM_ROUNDS}}</b>
+        <b>Round {{player.round_number}}</b>
     {{ if is_random_matching }}
     {{else}}
         Now playing with <b>Player #{{player.opponent_number}}</b>
@@ -151,12 +151,18 @@
         </tr>
         <tr>
             <th rowspan="2" class="p1" id="you_cell"><span>You</span></th>
-            <td><button name="cooperate" value="True" class="btn btn-primary btn-large" id='cooperateBtn' onclick="action_clicked(this)">Choose<br>UP</button></td>
+            <td><button name="cooperate" 
+                {{if player.is_UPbutton_cooperation}} value="True" id='cooperateBtn' 
+                {{else}} value="False" id='defectBtn' {{endif}} class="btn btn-primary btn-large"
+                onclick="action_clicked(this)">Choose<br>UP</button></td>
             <td><div class="p1 col">{{ t_left.CC}}</div><br><div class="p2 col">{{t_right.CC}}</div></td>
             <td><div class="p1 col">{{ t_left.CD }}</div><br><div class="p2 col">{{t_right.CD}}</div></td>
         </tr>
         <tr>
-            <td><button name="cooperate" value="False" class="btn btn-primary btn-large" id='defectBtn' onclick="action_clicked(this)">Choose<br>DOWN</button></td>
+            <td><button name="cooperate"
+                {{if not player.is_UPbutton_cooperation}} value="True" id='cooperateBtn' 
+                {{else}} value="False" id='defectBtn' {{endif}} class="btn btn-primary btn-large" 
+                onclick="action_clicked(this)">Choose<br>DOWN</button></td>
             <td><div class="p1 col">{{t_left.DC}}</div><br><div class="p2 col">{{ t_right.DC }}</div></td>
             <td><div class="p1 col">{{t_left.DD}}</div><br><div class="p2 col">{{t_right.DD}}</div></td>
         </tr>
@@ -226,6 +232,7 @@
     let results_time = js_vars.time_limit.results;
     let timerInterval;
     let waitInterval;
+    const is_UPcooperation = js_vars.is_UPcooperation;
     const waiting_info_textEL = document.getElementById('waiting_info');
     const nextButton = document.querySelector('.otree-btn-next');
     // ensures the random action is invoked after page is loaded so that (orelse livesend won't work), also, that the AFK div was loaded
@@ -380,7 +387,8 @@
         hideWaitingMessage()
            
         const dtable = document.getElementById('table1')
-        const resultRowIndex = me_cooperate ? 0 : 1;
+        let resultRowIndex = me_cooperate ? 0 : 1;
+        if(!is_UPcooperation) {resultRowIndex = me_cooperate ? 1 : 0};
         const resultColIndex = opponent_cooperate ? 0 : 1;  
 
             // highligh col
@@ -403,12 +411,11 @@
                     continue
                 }
 
-
-
                 let results_first_line_index = 2
                 let is_longer_table_line = (i==results_first_line_index)? 1 : 0; // Because 3rd row has 4 cols, while 4th row has 3 cols 
                 let my_selection_col = resultColIndex+1+is_longer_table_line
                 let my_selection_row = results_first_line_index + resultRowIndex
+                console.log(is_UPcooperation, resultRowIndex)
                 
                 if (j==my_selection_col) { // then results and forgone score goes here
                     my_score_div.innerHTML = (i==my_selection_row)? score_text : forgone_score_text;

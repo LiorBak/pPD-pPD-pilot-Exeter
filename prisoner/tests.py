@@ -19,4 +19,5 @@ class PlayerBot(Bot):
         if (self.player.super_game_round_number == C.ROUNDS_PER_SUPERGAME) and not self.player.session.config['random_matching']:
             yield EndOfSuperGame
         if self.player.round_number == C.NUM_ROUNDS:
-            yield EndOfExperiment
+            pass
+            # yield EndOfExperiment

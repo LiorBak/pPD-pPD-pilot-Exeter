@@ -69,7 +69,8 @@ def creating_session(subsession: Subsession):
     import math
     
     num_participants = subsession.session.num_participants
-    group_matrices = []
+    group_matrices = []  
+    # Round-robin scheduling
     if num_participants == 4:
         group_matrices = [
             [[1, 2], [3, 4]],
@@ -93,6 +94,33 @@ def creating_session(subsession: Subsession):
             [[1, 6], [2, 8], [3, 7], [4, 5]],
             [[1, 7], [2, 4], [3, 5], [6, 8]],
             [[1, 8], [2, 3], [4, 6], [5, 7]],
+        ]
+    elif num_participants == 10:
+        group_matrices = [
+            [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]],
+            [[1, 3], [2, 5], [4, 7], [6, 9], [8, 10]],
+            [[1, 4], [2, 6], [3, 8], [5, 9], [7, 10]],
+            [[1, 5], [2, 7], [3, 9], [4, 10], [6, 8]],
+            [[1, 6], [2, 8], [3, 10], [4, 9], [5, 7]],
+            [[1, 7], [2, 9], [3, 5], [4, 6], [8, 10]],
+            [[1, 8], [2, 10], [3, 6], [4, 5], [7, 9]],
+            [[1, 9], [2, 4], [3, 7], [5, 10], [6, 8]],
+            [[1, 10], [2, 3], [4, 8], [5, 6], [7, 9]],
+        ]
+
+    elif num_participants == 12:
+        group_matrices = [
+            [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12]],
+            [[1, 3], [2, 5], [4, 7], [6, 9], [8, 11], [10, 12]],
+            [[1, 4], [2, 6], [3, 8], [5, 10], [7, 11], [9, 12]],
+            [[1, 5], [2, 7], [3, 9], [4, 11], [6, 12], [8, 10]],
+            [[1, 6], [2, 8], [3, 10], [4, 12], [5, 11], [7, 9]],
+            [[1, 7], [2, 9], [3, 11], [4, 10], [5, 8], [6, 12]],
+            [[1, 8], [2, 10], [3, 12], [4, 9], [5, 7], [6, 11]],
+            [[1, 9], [2, 11], [3, 5], [4, 6], [7, 12], [8, 10]],
+            [[1, 10], [2, 12], [3, 6], [4, 8], [5, 9], [7, 11]],
+            [[1, 11], [2, 4], [3, 7], [5, 12], [6, 8], [9, 10]],
+            [[1, 12], [2, 3], [4, 8], [5, 6], [7, 10], [9, 11]],
         ]
     
     if len(group_matrices) > 0:
@@ -131,6 +159,7 @@ class Player(BasePlayer):
     total_score = models.CurrencyField(initial=0)
     mean_cooperation = models.FloatField(initial=0)
     chance_to_win_bonus = models.FloatField()
+    random_number_for_bonus = models.FloatField()
     win_bonus = models.BooleanField()
     total_experiment_payoffGBP = models.FloatField()
     subsequent_timeoutes = models.IntegerField(initial=0)
@@ -143,6 +172,7 @@ class Player(BasePlayer):
     is_description = models.BooleanField()
     is_pass = models.IntegerField(label='   ')
     is_dropout = models.BooleanField(initial=False)
+    is_UPbutton_cooperation = models.BooleanField()
     screen_width_px = models.FloatField()
     screen_height_px = models.FloatField()
     mobile_device = models.StringField()
@@ -207,6 +237,7 @@ def values_for_new_round(player: Player):
         player.total_score = player.in_round(player.round_number - 1).total_score
         player.subsequent_timeoutes = player.in_round(player.round_number - 1).subsequent_timeoutes
         player.is_dropout = player.subsequent_timeoutes >= 2
+        player.is_UPbutton_cooperation = player.in_round(1).is_UPbutton_cooperation
         # set charecter to visualize opponent
         if is_new_opponent:
             player.opponent_number = chr(ord(player.opponent_number)+1) 
@@ -248,6 +279,7 @@ def calc_total_score(player: Player):
     '''
     player.chance_to_win_bonus = chance_to_win
     random_number = random.uniform(0, 1)
+    player.random_number_for_bonus = random_number
     player.win_bonus = chance_to_win > random_number
     bonus = 0
     if player.win_bonus:
@@ -292,6 +324,7 @@ class Introduction(Page):
         import time
         player.experiment_start_time = time.time()
         player.game_type = player.session.config['game_type']
+        player.is_UPbutton_cooperation = False if random.random()<.5 else True
         
         
         score_matrix = C.SCORE_MATRIX[player.game_type]
@@ -350,9 +383,9 @@ class Introduction(Page):
             desc_other = text_desc_other,
             is_random_matching = player.session.config['random_matching'],
             is_description = player.session.config['is_description'],
-            example_score_p1 = add_points_text(score_matrix[(False, True)][0]),
-            example_score_p2 =  add_points_text(score_matrix[(True, False)][0]),
-            example_forgone_score_p1 = add_points_text(score_matrix[(True, True)][0]),
+            example_score_p1 = add_points_text(30),
+            example_score_p2 =  add_points_text(20),
+            example_forgone_score_p1 = add_points_text(10),
             show_up_fee = int(player.session.config['participation_fee']),
             bonus_fee = player.session.config['bonus_payment'],
             bonus_example_points = bonus_example_points,
@@ -376,6 +409,7 @@ class Decision(Page):
                     is_dropout=player.is_dropout,
                     time_limit = time_limit,
                     is_random_matching = is_random_matching,
+                    is_UPcooperation = player.is_UPbutton_cooperation,
                     already_made_desicion = (player.field_maybe_none('cooperate') != None),
                     cooperate = player.field_maybe_none('cooperate'),
                     )

@@ -23,11 +23,11 @@
 
 {{ if is_random_matching}}
     <p>
-        In this study, you will play the same game {{C.NUM_ROUNDS}} times. In each game, you will be randomly and anonymously paired with another participant in this experiment. You will not be paired with the same participant in two consecutive rounds.
+        In this study, you will play the same game for a predetermined yet unknown number of rounds. In each round, you will be randomly and anonymously paired with another participant. You will not be paired with the same participant in consecutive rounds.
     </p>
 {{ else }}
     <p>
-        In this study, you will play five games. Each game consists of {{C.ROUNDS_PER_SUPERGAME}} rounds. In each game, you will be randomly and anonymously paired with another participant in this experiment. You will remain paired with the same participant for all {{C.ROUNDS_PER_SUPERGAME}} rounds of the game, and will then switch to play the next game with a different participant. You will not be paired with the same participant in more than one game.
+        In this study, you will play the same game, each time with a different player, for {{C.ROUNDS_PER_SUPERGAME}} rounds. Spesifically, in each game, you will be randomly and anonymously paired with another participant in this experiment. You will remain paired with the same participant for all {{C.ROUNDS_PER_SUPERGAME}} rounds of the game, and will then switch to play the next game with a different participant. You will not be paired with the same participant in more than one game.
     </p> 
 {{ endif }}
 
@@ -147,11 +147,11 @@ After both you and the other player make your choices, you will see your payoff 
 </h2>
 {{ if is_random_matching }}
     <p>
-        Each round you will play with a <b>different player</b> who will be chosen at random. The game will be played for {{C.NUM_ROUNDS}}.
+        Each round, you will play with a <b>different player</b>, chosen at random. The game will continue for a predetermined but unknown number of rounds.
     </p>
 {{ else }}
     <p>
-        After {{C.ROUNDS_PER_SUPERGAME}} rounds are over, you will get a new partner to play the same game with. Overall, you will be matched with {{num_opponents}} different partners, playing {{C.ROUNDS_PER_SUPERGAME}} rounds with each (a total of {{C.NUM_ROUNDS}} rounds of the game).
+        After {{C.ROUNDS_PER_SUPERGAME}} rounds are over, you will get a different player to play the same game with. Overall, you will be matched with an unkown amount of different players, playing {{C.ROUNDS_PER_SUPERGAME}} rounds with each. The amount of player you will play with is pre-determined.
     </p>
 {{ endif }}
 <!-- payment info -->
