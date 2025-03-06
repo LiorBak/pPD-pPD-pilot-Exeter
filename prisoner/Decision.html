@@ -462,16 +462,23 @@
         const forgone_text = forgone_value_to_text(forgone);
         const opponent_score_text = value_to_text(opponent_score);
 
+        
+        let action_text = cooperate ? 'UP' : 'DOWN';
+        let forgone_action_text = cooperate ? 'DOWN' : 'UP';
+        if(!is_UPcooperation) {
+            action_text = cooperate ? 'DOWN' : 'UP';
+            forgone_action_text = cooperate ? 'UP' : 'DOWN';
+        };
         let text = `
             <p>
                 ${penalty === 0 ? 
-                `You chose <b><span class="p1">${cooperate ? 'UP' : 'DOWN'}</span></b> and the other player chose <span class="p2">${opponent_cooperate ? 'LEFT' : 'RIGHT'}</span>, hence 
+                `You chose <b><span class="p1">${action_text}</span></b> and the other player chose <span class="p2">${opponent_cooperate ? 'LEFT' : 'RIGHT'}</span>, hence 
                 you <b><span class="p1">${score_text}</span></b>.<br>
-                Had you chosen to play differently (i.e, ${!cooperate ? 'UP' : 'DOWN'}) you would have <span class="forgone_text">${forgone_text}</span><br>
+                Had you chosen to play differently (i.e, ${forgone_action_text}) you would have <span class="forgone_text">${forgone_text}</span><br>
                 The other player ${opponent_score_text}.` : 
 
                 `<b>You received a penalty of ${penalty}, because you didn't take action in time</b>.<br>
-                The system automatically assigned you to play <b><span class="p1">${cooperate ? 'UP' : 'DOWN'}</span></b>.<br>
+                The system automatically assigned you to play <b><span class="p1">${action_text}</span></b>.<br>
                 The other player chose <span class="p2">${opponent_cooperate ? 'LEFT' : 'RIGHT'}</span>.<br>
                 As a result, you <b><span class="p1">${score_text}</span></b> (after penalty deduction).<br>
                 If the system would have chosen differently, you would have <span class="forgone_text">${forgone_text}</span>.<br>
