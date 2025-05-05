@@ -201,7 +201,11 @@
                 {{ for past_player in history }}
                     <tr>
                         <td>{{if is_random_matching}}{{past_player.round_number}}{{else}}{{ past_player.super_game_round_number}}{{endif}}</td>
-                        <td>{{ if past_player.cooperate }}UP{{ else }}DOWN{{ endif }}</td>
+                        <td>{{ if past_player.cooperate }}
+                                {{if is_UPbutton_cooperation}} UP {{else}} DOWN {{endif}}
+                            {{ else }}
+                                {{if is_UPbutton_cooperation}} DOWN {{else}} UP {{endif}}
+                            {{ endif }}</td>
                         <td>{{ past_player.score }}{{ if past_player.penalty > 0}} <i>(inc. penalty)</i>{{ endif }}</td> 
                         <td style="text-decoration: line-through;">{{ past_player.forgone_score}}{{ if past_player.penalty > 0}} <i>(inc. penalty)</i>{{ endif }}</td> 
                         <td>{{ if past_player.opponent_cooperate }}LEFT{{ else }}RIGHT{{ endif }}</td>

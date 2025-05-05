@@ -345,7 +345,6 @@ class Introduction(Page):
         player.game_type = player.session.config['game_type']
         player.is_UPbutton_cooperation = False if random.random()<.5 else True
         
-        
         score_matrix = C.SCORE_MATRIX[player.game_type]
         add_got_text = lambda v: 'get '+ str(v) if v == 0 else ('gain '+ str(v) if v > 0 else 'lose ' + str(abs(v))) + ' points'
         # << copied from Desicion >>
@@ -394,7 +393,30 @@ class Introduction(Page):
             text_right['DD'] = 'Right'
         # << end of copy from Desicion >>
 
+        # << adjust texts for counterbalanced players >>
+        if not player.is_UPbutton_cooperation:
+            for d in [text_left, text_right, text_desc_player, text_desc_other]:
+                d['CC'], d['DC'] = d['DC'], d['CC']
+                d['CD'], d['DD'] = d['DD'], d['CD']
+
+
         bonus_example_points = C.NUM_ROUNDS*15 #assuming 15 is the mean score per round
+
+        # << example score >>
+        def calculate_score(score_val, random_treshold):
+            if type(score_val) == list:  # Returns the payoff based on a random draw and the given probabilities
+                return score_val[0] if random_treshold < score_val[1] else score_val[2]
+            else:
+                return score_val
+
+        random_treshold = 0.1
+        score_matrix = C.SCORE_MATRIX[player.game_type]        
+        example_action = False if player.is_UPbutton_cooperation else True
+        example_action_other = True
+        example_score_p1 = add_points_text(calculate_score(score_matrix[ (example_action, example_action_other) ], random_treshold))
+        example_forgone_score_p1 =  add_points_text(calculate_score(score_matrix[ (not example_action, example_action_other) ], random_treshold))
+        example_score_p2 = add_points_text(calculate_score(score_matrix[ (example_action_other, example_action) ], random_treshold))
+
         return dict(
             t_left = text_left,
             t_right = text_right,
@@ -402,9 +424,10 @@ class Introduction(Page):
             desc_other = text_desc_other,
             is_random_matching = player.session.config['random_matching'],
             is_description = player.session.config['is_description'],
-            example_score_p1 = add_points_text(30),
-            example_score_p2 =  add_points_text(20),
-            example_forgone_score_p1 = add_points_text(10),
+            example_score_p1 = example_score_p1,
+            example_score_p2 =  example_score_p2,
+            example_forgone_score_p1 = example_forgone_score_p1,
+            is_UPbutton_cooperation = player.is_UPbutton_cooperation,
             show_up_fee = int(player.session.config['participation_fee']),
             bonus_fee = player.session.config['bonus_payment'],
             bonus_example_points = bonus_example_points,
@@ -523,14 +546,22 @@ class Decision(Page):
             text_right['DD'] = 'Right'
 
         # ------------------
+
+        # << adjust texts for counterbalanced players >>
+        if not player.is_UPbutton_cooperation:
+            for d in [text_left, text_right]:
+                d['CC'], d['DC'] = d['DC'], d['CC']
+                d['CD'], d['DD'] = d['DD'], d['CD']
+
         return dict(
             is_new_supergame = (is_new_opponent and not player.session.config['random_matching']),
             history = history,
             t_left = text_left,
             t_right = text_right,
             is_random_matching = player.session.config['random_matching'],
-            is_history_table = player.session.config['is_description'],
+            is_history_table = not player.session.config['random_matching'],
             is_played = (player.field_maybe_none('cooperate') != None),
+            is_UPbutton_cooperation = player.is_UPbutton_cooperation,
         )
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
