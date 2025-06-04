@@ -12,6 +12,7 @@ SESSION_CONFIGS = [
          game_type="EV-PD beh-CG",
          random_matching=True,
          is_description=True,
+         EV_display=True,
          ),
     dict(name='test6bots',
          num_demo_participants=6,
@@ -20,6 +21,7 @@ SESSION_CONFIGS = [
          game_type="EV-CG beh-PD",
          random_matching=True,
          is_description=True,
+         EV_display=True,
          ),
     dict(name='experiment_main',
          num_demo_participants=6,
@@ -28,6 +30,7 @@ SESSION_CONFIGS = [
          game_type="EV-PD beh-CG",
          random_matching=True,
          is_description=True,
+         EV_display=True,
          ),
     dict(
         name='forwrd_link',
