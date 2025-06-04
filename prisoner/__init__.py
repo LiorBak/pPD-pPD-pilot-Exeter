@@ -8,7 +8,7 @@ class C(BaseConstants):
     NAME_IN_URL = 'prisoner'
     PLAYERS_PER_GROUP = 2
     NUM_ROUNDS = 100
-    ROUNDS_PER_SUPERGAME = 10
+    ROUNDS_PER_SUPERGAME = 3
     PENALTY = cu(5)
     IS_TEST = False
     DECISION_TIMEOUT = 15
@@ -246,6 +246,7 @@ def values_for_new_round(player: Player):
     
     player.is_random_matching = player.session.config['random_matching']
     player.is_description = player.session.config['is_description']
+    player.device_info = 'EV_display' if player.session.config['EV_display'] else ''
     
     if player.round_number > 1:
         #set repeeting values
@@ -368,6 +369,7 @@ class Introduction(Page):
         text_desc_player = {}
         text_desc_other = {}
 
+        # if full description of payof structure:
         for i in [0, 1]:
             for j in [0,1]:
                 ti = 'C' if i == 1 else 'D'
@@ -381,7 +383,38 @@ class Introduction(Page):
                 text_desc_other[f"{ti}{tj}"] = score_matrix_to_description(score_matrix[(j,i)])  #opponent
                 # _______<< end of 'only for introduction' >>______        
         
-        if not player.session.config['is_description']:
+        if player.session.config['EV_display']:
+            def get_ev(matrix, player_coop, other_coop):
+                value = matrix[(bool(player_coop), bool(other_coop))]
+                if isinstance(value, list) and len(value) == 3:
+                    a, p, b = value
+                    return cu(int(round(p * a + (1 - p) * b)))
+                return cu(int(round(value)))
+            def add_ev_text(value):
+                return str(int(value)) + ' points in expectation'
+            text_left['CC'] = add_ev_text(get_ev(score_matrix, 1, 1))
+            text_left['CD'] = add_ev_text(get_ev(score_matrix, 1, 0))
+            text_left['DC'] = add_ev_text(get_ev(score_matrix, 0, 1))
+            text_left['DD'] = add_ev_text(get_ev(score_matrix, 0, 0))
+
+            text_right['CC'] = add_ev_text(get_ev(score_matrix, 1, 1))
+            text_right['CD'] = add_ev_text(get_ev(score_matrix, 1, 0))
+            text_right['DC'] = add_ev_text(get_ev(score_matrix, 1, 0))
+            text_right['DD'] = add_ev_text(get_ev(score_matrix, 0, 0))
+        # << end of copy from Desicion >>
+            for k, v in text_left.items():
+                text_desc_player[k] = 'get ' + v
+            for k, v in text_right.items():
+                text_desc_other[k] = 'get ' + v
+
+        # << adjust texts for counterbalanced players >>
+        if not player.is_UPbutton_cooperation:
+            for d in [text_left, text_right, text_desc_player, text_desc_other]:
+                d['CC'], d['DC'] = d['DC'], d['CC']
+                d['CD'], d['DD'] = d['DD'], d['CD']
+        
+        # << if players get don't get any descriptive payoffs - show some text >>
+        if not player.session.config['is_description'] and not player.session.config['EV_display']:
             text_left['CC'] = 'Up'
             text_left['CD'] = 'Up'
             text_left['DC'] = 'Down'
@@ -391,15 +424,8 @@ class Introduction(Page):
             text_right['CD'] = 'Right'
             text_right['DC'] = 'Left'
             text_right['DD'] = 'Right'
-        # << end of copy from Desicion >>
 
-        # << adjust texts for counterbalanced players >>
-        if not player.is_UPbutton_cooperation:
-            for d in [text_left, text_right, text_desc_player, text_desc_other]:
-                d['CC'], d['DC'] = d['DC'], d['CC']
-                d['CD'], d['DD'] = d['DD'], d['CD']
-
-
+        
         bonus_example_points = C.NUM_ROUNDS*15 #assuming 15 is the mean score per round
 
         # << example score >>
@@ -417,6 +443,14 @@ class Introduction(Page):
         example_forgone_score_p1 =  add_points_text(calculate_score(score_matrix[ (not example_action, example_action_other) ], random_treshold))
         example_score_p2 = add_points_text(calculate_score(score_matrix[ (example_action_other, example_action) ], random_treshold))
 
+        if player.session.config['EV_display']:
+            example_score_p1=cu(30)
+            example_forgone_score_p1 = cu(20)
+            example_score_p2 = cu(0)
+            if not player.is_UPbutton_cooperation:  # revert score and forgone values
+                example_score_p1, example_forgone_score_p1 = example_forgone_score_p1, example_score_p1
+                example_score_p2 = cu(20)
+
         return dict(
             t_left = text_left,
             t_right = text_right,
@@ -424,6 +458,7 @@ class Introduction(Page):
             desc_other = text_desc_other,
             is_random_matching = player.session.config['random_matching'],
             is_description = player.session.config['is_description'],
+            is_EV_display = player.session.config['EV_display'],
             example_score_p1 = example_score_p1,
             example_score_p2 =  example_score_p2,
             example_forgone_score_p1 = example_forgone_score_p1,
@@ -533,7 +568,35 @@ class Decision(Page):
                 tj = 'C' if j == 1 else 'D'
                 text_left[f"{ti}{tj}"] = score_matrix_to_text(score_matrix[(i,j)])  #player
                 text_right[f"{ti}{tj}"] = score_matrix_to_text(score_matrix[(j,i)])  #opponent
+
+        if player.session.config['EV_display']:
+            def get_ev(matrix, player_coop, other_coop):
+                value = matrix[(bool(player_coop), bool(other_coop))]
+                if isinstance(value, list) and len(value) == 3:
+                    a, p, b = value
+                    return cu(int(round(p * a + (1 - p) * b)))
+                return cu(int(round(value)))
+            def add_ev_text(value):
+                return str(int(value)) + ' points in expectation'
+            text_left['CC'] = add_ev_text(get_ev(score_matrix, 1, 1))
+            text_left['CD'] = add_ev_text(get_ev(score_matrix, 1, 0))
+            text_left['DC'] = add_ev_text(get_ev(score_matrix, 0, 1))
+            text_left['DD'] = add_ev_text(get_ev(score_matrix, 0, 0))
+
+            text_right['CC'] = add_ev_text(get_ev(score_matrix, 1, 1))
+            text_right['CD'] = add_ev_text(get_ev(score_matrix, 1, 0))
+            text_right['DC'] = add_ev_text(get_ev(score_matrix, 1, 0))
+            text_right['DD'] = add_ev_text(get_ev(score_matrix, 0, 0))
+        # << end of copy from Desicion >>
+
+        # << adjust texts for counterbalanced players >>
+        if not player.is_UPbutton_cooperation:
+            for d in [text_left, text_right]:
+                d['CC'], d['DC'] = d['DC'], d['CC']
+                d['CD'], d['DD'] = d['DD'], d['CD']
         
+
+        # << if players get don't get any descriptive payoffs - show some text >>
         if not player.session.config['is_description']:
             text_left['CC'] = 'Up'
             text_left['CD'] = 'Up'
@@ -546,12 +609,6 @@ class Decision(Page):
             text_right['DD'] = 'Right'
 
         # ------------------
-
-        # << adjust texts for counterbalanced players >>
-        if not player.is_UPbutton_cooperation:
-            for d in [text_left, text_right]:
-                d['CC'], d['DC'] = d['DC'], d['CC']
-                d['CD'], d['DD'] = d['DD'], d['CD']
 
         return dict(
             is_new_supergame = (is_new_opponent and not player.session.config['random_matching']),

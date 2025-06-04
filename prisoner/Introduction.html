@@ -35,7 +35,12 @@
     Actions and Points
 </h2>
 <p>
-    In each round, both you and the other player (the person you will be paired with) will have to make a choice between two options. <span class="p1">You</span> will choose between playing <b>UP</b> or <b>DOWN</b> while the <span class="p2">other player</span> will choose between playing LEFT or RIGHT. You will make your choices simultaneously and privately. Your choices will jointly determine both your payoffs in points. These payoffs are detailed in the following table, with your payoffs marked in <span class="p1">blue</span> and the other player’s payoffs marked in <span class="p2">orange</span>:   
+    In each round, both you and the other player (the person you will be paired with) will have to make a choice between two options. <span class="p1">You</span> will choose between playing <b>UP</b> or <b>DOWN</b> while the <span class="p2">other player</span> will choose between playing LEFT or RIGHT. You will make your choices simultaneously and privately. Your choices will jointly determine both your payoffs in points.
+    {{ if is_EV_display }}
+        For each possible combination, the payoff shown is an expected value. This means that while the exact payoff may vary in any given round, the amount shown is the average you can expect over infinitely many rounds. Details about these expected payoffs are provided in the following table, with your expected payoffs marked in <span class="p1">blue</span> and the other player’s expected payoffs marked in <span class="p2">orange</span>:
+    {{ elif is_description}}
+        Information about these payoffs are detailed in the following table, with your payoffs marked in <span class="p1">blue</span> and the other player’s payoffs marked in <span class="p2">orange</span>:
+    {{ endif }} 
 </p>
 
 <!-- payoffs table -->
@@ -62,7 +67,26 @@
         </tr>
     </table>
 </div>
-{{ if is_description}} <!-- explain table content-->
+{{ if is_EV_display }}
+    <p><b>The payoff table shown above will be displayed on the screen for the entire duration of the game.</b></p>
+    <p>The table displays the expected payoffs for each combination of choices made by you and the other player.
+    </p>
+        <p>
+            This shows:
+            <ul>
+                <li>If you choose UP and the other player chooses LEFT, <span class="p1">you</span> will <span class="p1">{{ desc_player.CC }}</span>.<br>The <span class="p2">other player</span> will <span class="p2">{{ desc_other.CC }}</span>.</li><br>
+                <li> If you choose UP and the other player chooses RIGHT, <span class="p1">you</span> will <span class="p1">{{ desc_player.CD }}</span>.<br>The <span class="p2">other player</span> will <span class="p2">{{ desc_other.CD }}</span>.</li><br> 
+                <li> If you choose DOWN and the other player chooses LEFT, <span class="p1">you</span> will <span class="p1">{{ desc_player.DC }}</span>.<br>The <span class="p2">other player</span> will <span class="p2">{{ desc_other.DC }}</span>.</li><br> 
+                <li> If you choose DOWN and the other player chooses RIGHT, <span class="p1">you</span> will <span class="p1">{{ desc_player.DD }}</span>.<br> The <span class="p2">other player</span> will <span class="p2">{{ desc_other.DD }}</span>.</li>
+            </ul>
+    <p>
+        Reminder: <b>“In expectation”</b> refers to the average payoff you would receive if the same situation were repeated infinitely many times. For example, a payoff of 10 points in expectation could mean receiving 40 points 25% of the time and 0 points 75% of the time.
+        <p>
+            <b>Note on the random process:</b>
+            <br>The realized (actual) payoffs are determined by a random process that is independent of the decisions made by you or the other player.
+        </p>
+    </p>
+{{ elif is_description}} <!-- explain table content-->
 <p><b>The payoff table shown above will be displayed on the screen for the entire duration of the game.</b></p>
     <p>
         This shows:
@@ -125,6 +149,7 @@
         Had you chosen to play differently (i.e, UP) you would have <span class="forgone_text">gotten {{example_forgone_score_p1}}</span>.<br>
         The other player got {{example_score_p2}}.
     </p>
+        {{if is_random_matching}}<span><i> Note: you will be matched with a new partner for the next round.</i></span>{{endif}}
 </div>
 
 <h2>
