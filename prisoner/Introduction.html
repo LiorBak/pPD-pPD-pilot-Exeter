@@ -80,11 +80,8 @@
                 <li> If you choose DOWN and the other player chooses RIGHT, <span class="p1">you</span> will <span class="p1">{{ desc_player.DD }}</span>.<br> The <span class="p2">other player</span> will <span class="p2">{{ desc_other.DD }}</span>.</li>
             </ul>
     <p>
-        Reminder: <b>“In expectation”</b> refers to the average payoff you would receive if the same situation were repeated infinitely many times. For example, a payoff of 10 points in expectation could mean receiving 40 points 25% of the time and 0 points 75% of the time.
-        <p>
-            <b>Note on the random process:</b>
-            <br>The realized (actual) payoffs are determined by a random process that is independent of the decisions made by you or the other player.
-        </p>
+        Reminder: <b>“In expectation”</b> refers to the average payoff you would receive if the same situation were repeated infinitely many times.
+        However, the actual realized payoff may vary due to a random process (which is independent of the decisions made by the players). For example, a payoff of 10 points in expectation could mean receiving 40 points 25% of the time and 0 points 75% of the time.
     </p>
 {{ elif is_description}} <!-- explain table content-->
 <p><b>The payoff table shown above will be displayed on the screen for the entire duration of the game.</b></p>
@@ -151,6 +148,9 @@
     </p>
         {{if is_random_matching}}<span><i> Note: you will be matched with a new partner for the next round.</i></span>{{endif}}
 </div>
+<p>
+    Note the actual payoffs in the experiment are likely to differ from the payoffs in this example.
+</p>
 
 <h2>
     Decision Time and Feedback

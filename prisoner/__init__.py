@@ -363,6 +363,13 @@ class Introduction(Page):
             else:
                 return add_got_text(score_val)
         
+        def get_ev(matrix, player_coop, other_coop):
+            value = matrix[(bool(player_coop), bool(other_coop))]
+            if isinstance(value, list) and len(value) == 3:
+                a, p, b = value
+                return cu(int(round(p * a + (1 - p) * b)))
+            return cu(int(round(value)))
+        
         # ---- set text for desicion table according to game type----
         text_left = {}
         text_right = {}
@@ -384,12 +391,6 @@ class Introduction(Page):
                 # _______<< end of 'only for introduction' >>______        
         
         if player.session.config['EV_display']:
-            def get_ev(matrix, player_coop, other_coop):
-                value = matrix[(bool(player_coop), bool(other_coop))]
-                if isinstance(value, list) and len(value) == 3:
-                    a, p, b = value
-                    return cu(int(round(p * a + (1 - p) * b)))
-                return cu(int(round(value)))
             def add_ev_text(value):
                 return str(int(value)) + ' points in expectation'
             text_left['CC'] = add_ev_text(get_ev(score_matrix, 1, 1))
@@ -444,12 +445,9 @@ class Introduction(Page):
         example_score_p2 = add_points_text(calculate_score(score_matrix[ (example_action_other, example_action) ], random_treshold))
 
         if player.session.config['EV_display']:
-            example_score_p1=cu(30)
-            example_forgone_score_p1 = cu(20)
-            example_score_p2 = cu(0)
-            if not player.is_UPbutton_cooperation:  # revert score and forgone values
-                example_score_p1, example_forgone_score_p1 = example_forgone_score_p1, example_score_p1
-                example_score_p2 = cu(20)
+            example_score_p1 = get_ev(score_matrix, example_action, example_action_other)
+            example_forgone_score_p1 = get_ev(score_matrix, not example_action, example_action_other)
+            example_score_p2 = get_ev(score_matrix, example_action_other, example_action)
 
         return dict(
             t_left = text_left,
