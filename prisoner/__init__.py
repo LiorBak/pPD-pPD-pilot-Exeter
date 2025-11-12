@@ -7,8 +7,8 @@ doc = '\nThis is a one-shot "Prisoner\'s Dilemma". Two players are asked separat
 class C(BaseConstants):
     NAME_IN_URL = 'prisoner'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 100
-    ROUNDS_PER_SUPERGAME = 3
+    NUM_ROUNDS = 5
+    ROUNDS_PER_SUPERGAME = 2
     PENALTY = cu(5)
     IS_TEST = False
     DECISION_TIMEOUT = 15
@@ -52,6 +52,31 @@ class C(BaseConstants):
             (True, True): [17, .5, 23],
             (False, False): [8, .5, 12],
             (True, False): [0, .9, 300],            
+        },
+        
+        '-95EV-PD beh-PD': {  # behavioralPD_evPD
+            (False, True): [25, .95, 125],
+            (True, True): [17, .5, 23],
+            (False, False): [8, .5, 12],
+            (True, False): [5, .95, -95],            
+        },
+        '95EV-PD beh-CG': {  # behavioralCG_evPD
+            (False, True): [0, .95, 600],
+            (True, True): [17, .5, 23],
+            (False, False): [8, .5, 12],
+            (True, False): [30, .95, -570],            
+        },
+        '-95EV-CG beh-CG': {  # behavioralCG_evCG
+            (False, True): [5, .95, -95],
+            (True, True): [17, .5, 23],
+            (False, False): [8, .5, 12],
+            (True, False): [25, .95, 125],            
+        },
+        '95EV-CG beh-PD': {  # behavioralCG_evCG
+            (False, True): [30, .95, -570],
+            (True, True): [17, .5, 23],
+            (False, False): [8, .5, 12],
+            (True, False): [0, .95, 600],            
         },
     }
 
@@ -359,7 +384,7 @@ class Introduction(Page):
 
         def score_matrix_to_description(score_val): # Returns the score text for the description
             if type(score_val) == list:  
-                return f'{add_got_text(score_val[0])} with <nobr>probability {round(score_val[1],1)} ({round(score_val[1]*100)}% chance),</nobr> and <nobr>{add_got_text(score_val[2])} otherwise ({round((1-score_val[1])*100)}% chance)</nobr>'
+                return f'{add_got_text(score_val[0])} with <nobr>probability {round(score_val[1],2)} ({round(score_val[1]*100)}% chance),</nobr> and <nobr>{add_got_text(score_val[2])} otherwise ({round((1-score_val[1])*100)}% chance)</nobr>'
             else:
                 return add_got_text(score_val)
         
@@ -617,6 +642,7 @@ class Decision(Page):
             is_history_table = not player.session.config['random_matching'],
             is_played = (player.field_maybe_none('cooperate') != None),
             is_UPbutton_cooperation = player.is_UPbutton_cooperation,
+            class_experiment = player.session.config['class_experiment'],
         )
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
@@ -632,7 +658,7 @@ class ResultsWaitPage(WaitPage):
 class EndOfSuperGame(Page):
     @staticmethod
     def is_displayed(player: Player):
-        return (player.super_game_round_number == C.ROUNDS_PER_SUPERGAME) and not player.session.config['random_matching']
+        return (player.super_game_round_number == C.ROUNDS_PER_SUPERGAME) and not player.session.config['random_matching'] and not (player.round_number == C.NUM_ROUNDS)
     @staticmethod
     def vars_for_template(player: Player):
         # ---- set history for historical scores table -------
@@ -668,6 +694,7 @@ class EndOfExperiment(Page):
             lottery_num = random_number,
             show_up_fee = int(player.session.config['participation_fee']),
             bonus_fee = player.session.config['bonus_payment'],
+            class_experiment=player.session.config['class_experiment'],
         )
 class ReadMe(Page):
     pass

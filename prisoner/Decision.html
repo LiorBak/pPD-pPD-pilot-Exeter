@@ -1,4 +1,5 @@
 {{ extends 'global/Page.html' }}
+
 {{ block title }}Choose Your Strategy: Up or Down?{{ endblock }}
 
 {{ block content }}
@@ -88,6 +89,7 @@
 </style>
 
 {{formfield_errors 'cooperate' }}
+
 <div id="timer">Time left: </div>
 <div id="AFKoverlay">
     <div><p>You have not been active for a while, thus random actions are chosen on your behalf. If you will not be active in time, you will not get payoff for the experiment. Please press here to return to the experiment.</p>
@@ -98,10 +100,10 @@
 {{ if player.round_number > 1 }}
 
     {{ if is_new_supergame }}
-
+        <br><br><br>
         Congradulations! you completed a super game. <br>
         You are now matched with a <b>another player</b>. <br>
-        Choose your first action in the game with him. <br>
+        Choose your first action in the game with him. <br><br><br><br>
 
     {{ endif }}
 
@@ -122,13 +124,14 @@
 <!-- General Game Info -->
 <div id='general_game_info' style='display: flex; justify-content: space-between; font-size: 1.25em; padding: 0px 20px 0px 20px;'>
     <span>
-        <b>Round {{player.round_number}}</b>
     {{ if is_random_matching }}
-    {{else}}
-        Now playing with <b>Player #{{player.opponent_number}}</b>
-        <b>Round {{player.super_game_round_number}} of {{C.ROUNDS_PER_SUPERGAME}}</b> with that player.
-    {{endif}}
+        <b>Round {{player.round_number}}</b>
     </span>
+    {{else}}
+        <span>Now playing with <b>Player #{{player.opponent_number}} |</b> </span><span>
+        <b>Round {{player.super_game_round_number}} of {{C.ROUNDS_PER_SUPERGAME}}</b> with that player.</span>
+    {{endif}}
+    
 </div>
 
 <!-- Payoffs and Decision table -->
@@ -227,6 +230,8 @@
     {{ formfield 'is_dropout'}}
 </div>
 
+
+{{ if class_experiment}} Your player ID:{{participant.id_in_session}}<br> {{endif}}
 
 <script>
     let timerElement = document.getElementById('timer');
