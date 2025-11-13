@@ -20,6 +20,8 @@ services:
     tmpfs:
       - "/tmp"
       - "/run"
+    networks:
+      - ppdlior_network
 
   otree:
     # if using Docker Hub, leave "build: ./" commented out.
@@ -44,8 +46,17 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    networks:
+      - ppdlior_network
 
 volumes:
   database:
   otree-resetdb:
 
+networks:
+  ppdlior_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.80.1.240/29
+          gateway: 172.80.1.241
