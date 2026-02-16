@@ -7,8 +7,8 @@ doc = '\nThis is a one-shot "Prisoner\'s Dilemma". Two players are asked separat
 class C(BaseConstants):
     NAME_IN_URL = 'prisoner'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 100
-    ROUNDS_PER_SUPERGAME = 8
+    NUM_ROUNDS = 5
+    ROUNDS_PER_SUPERGAME = 2
     PENALTY = cu(5)
     IS_TEST = False
     DECISION_TIMEOUT = 15
@@ -424,7 +424,7 @@ class Introduction(Page):
             text_left['DD'] = add_ev_text(get_ev(score_matrix, 0, 0))
 
             text_right['CC'] = add_ev_text(get_ev(score_matrix, 1, 1))
-            text_right['CD'] = add_ev_text(get_ev(score_matrix, 1, 0))
+            text_right['CD'] = add_ev_text(get_ev(score_matrix, 0, 1))
             text_right['DC'] = add_ev_text(get_ev(score_matrix, 1, 0))
             text_right['DD'] = add_ev_text(get_ev(score_matrix, 0, 0))
         # << end of copy from Desicion >>
@@ -607,7 +607,7 @@ class Decision(Page):
             text_left['DD'] = add_ev_text(get_ev(score_matrix, 0, 0))
 
             text_right['CC'] = add_ev_text(get_ev(score_matrix, 1, 1))
-            text_right['CD'] = add_ev_text(get_ev(score_matrix, 1, 0))
+            text_right['CD'] = add_ev_text(get_ev(score_matrix, 0, 1))
             text_right['DC'] = add_ev_text(get_ev(score_matrix, 1, 0))
             text_right['DD'] = add_ev_text(get_ev(score_matrix, 0, 0))
         # << end of copy from Desicion >>
