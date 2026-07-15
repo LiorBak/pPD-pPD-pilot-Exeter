@@ -55,7 +55,7 @@ class RiskPreferences2(Page):
 
 class Demographics(Page):
     form_model = 'player'
-    form_fields = ['age', 'gender', 'full_name', 'academic_degree',
+    form_fields = ['age', 'gender', 'academic_degree',
                    'is_english_native_language', 'survey_optional_text']
 
 
