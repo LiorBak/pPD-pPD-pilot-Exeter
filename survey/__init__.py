@@ -82,7 +82,7 @@ def get_fwd_url(payment, label: str):
     data = {'computername': label, 'payment': float(payment)}
 
     enc_data = base64.urlsafe_b64encode(json.dumps(data).encode()).decode()
-    url = "http://ph.feele.exeter.ac.uk?epd="
+    url = "https://lioness.nottingham.ac.uk/payment2/_beginParticipant.php?tic=LIOR-"
 
     return url + enc_data
 
