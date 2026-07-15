@@ -80,6 +80,18 @@ ROOMS = [
         name='room3',
         display_name='Room 3',
     ),
+        dict(
+        name='room4',
+        display_name='Room 4',
+    ),
+        dict(
+        name='room5',
+        display_name='Room 5',
+    ),
+        dict(
+        name='room_test',
+        display_name='Room Test',
+    ),
     dict(
         name='room_turned_away',
         display_name='Room Turned Away',
