@@ -5,6 +5,7 @@ from . import InformedConsentPage, Introduction, Decision, EndOfSuperGame, EndOf
 class PlayerBot(Bot):
     def play_round(self):
         if self.player.round_number == 1:
+            InformedConsentPage.live_method(self.player, {'pc_number': f'BOT-PC-{self.player.participant.id_in_session}'})
             yield InformedConsentPage
             yield Introduction, dict(screen_width_px=1, screen_height_px=1, mobile_device='test_bot', device_info='test_bot')
         yield Submission(

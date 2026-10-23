@@ -11,6 +11,57 @@
 <p>If you have any questions concerning this study, please send an email to: <a href="mailto:t.r.kaplan@exeter.ac.uk">t.r.kaplan@exeter.ac.uk</a>.</p>
 
 <p>Clicking “Next” below provides your informed consent to proceed.</p>
+
+<div class="card bg-light p-3 my-3" style="max-width: 420px;">
+    <label for="pc_input" class="form-label"><strong>Lab PC Number:</strong> <span class="text-danger">*</span></label>
+    <input type="text" id="pc_input" class="form-control" placeholder="e.g. PC-01" value="{{ existing_label }}" autocomplete="off" required>
+    <div id="pc_error" class="text-danger mt-1" style="display: none;"></div>
+</div>
+
 {{ next_button }}
+
+<script>
+    let isSaved = false;
+    const form = document.getElementById('form');
+    const nextBtn = document.querySelector('.otree-btn-next');
+    const pcInput = document.getElementById('pc_input');
+    const pcError = document.getElementById('pc_error');
+
+    form.addEventListener('submit', function (e) {
+        if (isSaved) {
+            return;
+        }
+        e.preventDefault();
+
+        const pcNumber = pcInput.value.trim();
+        if (!pcNumber) {
+            pcError.innerText = 'Please enter your PC number to continue.';
+            pcError.style.display = 'block';
+            pcInput.classList.add('is-invalid');
+            pcInput.focus();
+            return;
+        }
+
+        pcError.style.display = 'none';
+        pcInput.classList.remove('is-invalid');
+        nextBtn.disabled = true;
+        nextBtn.innerText = 'Saving...';
+
+        liveSend({ 'pc_number': pcNumber });
+    });
+
+    function liveRecv(data) {
+        if (data.saved) {
+            isSaved = true;
+            form.submit();
+        } else {
+            nextBtn.disabled = false;
+            nextBtn.innerText = 'Next';
+            pcError.innerText = data.error || 'Failed to save PC number. Please try again.';
+            pcError.style.display = 'block';
+            pcInput.classList.add('is-invalid');
+        }
+    }
+</script>
 
 {{ endblock }}

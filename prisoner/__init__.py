@@ -356,7 +356,19 @@ class InformedConsentPage(Page):
         return dict(
             show_up_fee = int(player.session.config['participation_fee']),
             bonus_fee = player.session.config['bonus_payment'],
+            existing_label = player.participant.label or '',
         )
+    @staticmethod
+    def live_method(player: Player, data):
+        pc = str(data.get('pc_number', '')).strip()
+        if pc:
+            player.participant.label = pc
+            return {player.id_in_group: dict(saved=True)}
+        return {player.id_in_group: dict(saved=False, error='Please enter a valid PC number.')}
+    @staticmethod
+    def error_message(player: Player, values):
+        if not player.participant.label:
+            return 'Please enter your PC number to proceed.'
 class Introduction(Page):
     form_model = 'player'
     form_fields = ['screen_width_px', 'screen_height_px', 'mobile_device', 'device_info']
